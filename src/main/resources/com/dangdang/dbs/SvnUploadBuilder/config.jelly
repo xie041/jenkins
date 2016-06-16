@@ -1,0 +1,31 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+  <!--
+    This jelly script is used for per-project configuration.
+
+    See global.jelly for a general discussion about jelly script.
+  -->
+
+  <!--
+    Creates a text field that shows the value of the "name" property.
+    When submitted, it will be passed to the corresponding constructor parameter.
+  -->
+  <f:entry title="SVN目标地址" field="svnRoot">
+    <f:textbox  />
+  </f:entry>
+  <f:entry title="上传文件(相对路径)" field="uploadFiles">
+    <f:textbox/>
+  </f:entry>
+  <f:entry title="目标SVN用户名" field="username">
+    <f:textbox  />
+  </f:entry>
+  <f:entry title="目标SVN密码" field="password">
+    <f:password  />
+  </f:entry>
+  <f:entry title="svn提交消息" field="message">
+    <f:textbox  />
+  </f:entry>
+  <f:entry title="功能激活" field="iswork">
+    <f:checkbox  />
+  </f:entry>
+  
+</j:jelly>

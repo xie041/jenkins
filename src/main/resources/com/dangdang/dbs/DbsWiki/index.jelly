@@ -1,0 +1,48 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+<l:layout title="DBS系统说明" secured="true">
+       
+
+  <l:side-panel>
+    <l:tasks>
+      <l:task icon="images/24x24/up.gif" href="${rootURL}/" title="${%返回}" />
+    </l:tasks>
+  </l:side-panel>
+  
+  <l:main-panel>
+  	<h3>插件实现功能说明</h3>
+  	<ul>
+  		<li>pom检测</li>
+  		<li>打包发布到开发机</li>
+  		<li>deploy jar到Nexus</li>
+  		<li>sonar代码检查</li>
+  		<li>单元测试覆盖统计</li>
+  		<li>定时自动构建</li>
+  		<li>失败邮件报告</li>
+  		<li>自动提交代码到svn，用于beta提测</li>
+  	</ul>
+  	
+  	<h3>图例说明</h3>
+    <img src="icons/dbs_usage.png" alt="DBS使用说明"/>
+    
+    <h4>pom.xml预检测【版本冲突、类重复、Snapshot版本依赖】</h4>
+    <img src="icons/checker.png" alt="预发布检测"/>
+    
+    <h4>自动化发布</h4>
+    <img src="icons/builder.png" alt="自动化发布系统"/>
+    
+    <h4>邮件通知</h4>
+    <img src="icons/email.png" alt="自动邮件通知"/>
+    
+    <h4>自动提交代码到svn，用于beta提测</h4>
+    <img src="icons/uploader.png" alt="自动化发布系统"/>
+    
+    <div>
+    	[如有任何疑问，请联系：xieyong@dangdang.com]
+    </div>
+  </l:main-panel>
+	
+	
+</l:layout>
+
+
+</j:jelly>

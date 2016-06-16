@@ -1,0 +1,15 @@
+<!--
+  This view is used to render the installed plugins page.
+-->
+<div>
+ 	 <pre>
+ 	 自动化发布系统(DBS):
+ 	 <!--
+ 	 
+ 	 <a href="http://sso.dangdang.com" target="_blank">当当内部系统</a>
+ 	 <a href="http://www.dangdang.com" target="_blank">当当主站</a>
+ 	 
+ 	 -->
+ 	 Author:xie041@126.com
+ 	 </pre>
+</div>
