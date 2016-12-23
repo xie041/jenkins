@@ -12,9 +12,11 @@
   <f:entry title="服务器列表" field="serverList">
     <f:textbox  />
   </f:entry>
+  <!--
   <f:entry title="发布方式[tomcat/jar]" field="runMode">
     <f:textbox/>
   </f:entry>
+  -->
   <f:entry title="发布到目标机的文件[相对全路径，从pom.xml起]" field="scpFiles">
     <f:textbox  />
   </f:entry>

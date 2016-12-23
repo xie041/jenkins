@@ -1,5 +1,8 @@
 package com.dangdang.dbs;
 
+import static com.dangdang.dbs.utils.AnsiColor.HIGHT_LIGHT_BEGIN;
+import static com.dangdang.dbs.utils.AnsiColor.RED;
+import static com.dangdang.dbs.utils.AnsiColor.rendering;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.BuildListener;
@@ -24,7 +27,6 @@ import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
-import static com.dangdang.dbs.utils.AnsiColor.*;
 
 /**
  * Sample {@link Builder}.
@@ -49,14 +51,10 @@ import static com.dangdang.dbs.utils.AnsiColor.*;
 public class DbsBuilder extends Builder {
 
 	private static final String PROJECT_STARTUP_SH = "bin/startup.sh";//项目启动脚本
-	private static final String DEPLOY_SHELL_TOMCAT = "/home/d/tools/bin/dbs_tomcat.sh";
-	private static final String DEPLOY_SHELL_JAR = "/home/d/tools/bin/dbs_jar.sh";
-	private static final String RUN_MODE_TOMCAT = "tomcat";
-	private static final String RUN_MODE_JAR = "jar";
+	private static final String DEPLOY_SHELL = "/home/d/tools/bin/deploy.sh";
 
 	private final boolean iswork;
 	private final String serverList;
-	private final String runMode;
 	private final String name;
 	private final String scpFiles;
 	private final String shell;
@@ -65,11 +63,10 @@ public class DbsBuilder extends Builder {
 	// Fields in config.jelly must match the parameter names in the
 	// "DataBoundConstructor"
 	@DataBoundConstructor
-	public DbsBuilder(boolean iswork,String serverList, String runMode,
-			String name, String scpFiles,String shell,boolean shellExec) {
+	public DbsBuilder(boolean iswork,String serverList,String name, String scpFiles,String shell,boolean shellExec) {
 		this.iswork = iswork;
 		this.serverList = serverList.trim();
-		this.runMode = runMode.trim();
+//		this.runMode = runMode.trim();
 		this.name = name.trim();
 		this.scpFiles = scpFiles.trim();
 		this.shell = shell.trim();
@@ -82,10 +79,6 @@ public class DbsBuilder extends Builder {
 	 */
 	public String getServerList() {
 		return serverList;
-	}
-
-	public String getRunMode() {
-		return runMode;
 	}
 
 	public String getName() {
@@ -137,7 +130,7 @@ public class DbsBuilder extends Builder {
 	private void suc(BuildListener listener) {
 		logger(listener, "-------------------------------------------------------------------------------------------------");
 		logger(listener, ".                                                                                               .");
-		logger(listener, rendering(HIGHT_LIGHT_BEGIN, ".         DBS Builder FINISHED! (Any Question Please contact xieyong@dangdang.com)              ."));
+		logger(listener, rendering(HIGHT_LIGHT_BEGIN, ".         DBS Builder FINISHED! (Any Question Please contact xie041@126.com)              ."));
 		logger(listener, ".                                                                                               .");
 		logger(listener, "-------------------------------------------------------------------------------------------------");
 	}
@@ -155,13 +148,7 @@ public class DbsBuilder extends Builder {
 			///home/d/tools/bin/dbs_tomcat.sh /home/d/jenkins/workspace/compete-web 10.255.209.112 /home/d/www/dbs target/compete-price-web bin/startup.sh true
 			for (int i = 0; i < servers.length; i++) {
 				ArgumentListBuilder args = new ArgumentListBuilder();
-				if (RUN_MODE_TOMCAT.equals(runMode)) {
-					args.add(DEPLOY_SHELL_TOMCAT);
-				} else if (RUN_MODE_JAR.equals(runMode)) {
-					args.add(DEPLOY_SHELL_JAR);
-				} else {
-					continue;
-				}
+				args.add(DEPLOY_SHELL);
 				//add params
 				args.add(build.getWorkspace());//$2
 				args.add(servers[i]);//$3
@@ -248,7 +235,6 @@ public class DbsBuilder extends Builder {
 		 */
 		public FormValidation doCheckName(
 				@QueryParameter("serverList") String serverList,
-				@QueryParameter("runMode") String runMode,
 				@QueryParameter("name") String name,
 				@QueryParameter("scpFiles") String scpFiles)
 				throws IOException, ServletException {
@@ -260,16 +246,8 @@ public class DbsBuilder extends Builder {
 				return FormValidation
 						.warning("请输入服务器ip，例如：192.168.11.15,192.168.14.21");
 			
-			
-			if(StringUtils.isEmpty(runMode)){
-				return FormValidation.warning("目前支持tomcat和main方法运行，请输入tomcat或者jar");
-			}
-			if(!("tomcat".equals(runMode) || "jar".equals(runMode))){
-				return FormValidation.error("目前只能为tomcat或者jar");
-			}
-			
 			if (StringUtils.isEmpty(name)) {
-				return FormValidation.error("部署的目标机器tomcat目录不能为空");
+				return FormValidation.error("部署的目标机器目录不能为空");
 			}
 			if (name.length() < 3){
 				return FormValidation.warning("tomcat目录名称不少于3个字母");

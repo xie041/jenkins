@@ -18,7 +18,7 @@ import org.kohsuke.stapler.StaplerResponse;
 @Extension
 public class ZLinkNexusAction extends ManagementLink implements RootAction {
 
-	private static final String URL = "http://maven.dangdang.com:8081/nexus/index.html";
+	private static final String URL = "http://maven.dangdang.com/nexus/index.html";
 
 	public String getIconFileName() {
 		return "/plugin/dbs/icons/nexus.png";

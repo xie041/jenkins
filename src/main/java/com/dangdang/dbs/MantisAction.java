@@ -16,16 +16,16 @@ import org.kohsuke.stapler.StaplerResponse;
  * sonar超链接
  */
 @Extension
-public class ZLinkPanAction extends ManagementLink implements RootAction {
+public class MantisAction extends ManagementLink implements RootAction {
 
-	private static final String URL = "https://pan.dangdang.com/";
+	private static final String URL = "http://mantis.dangdang.com/mantisbt/my_view_page.php";
 
 	public String getIconFileName() {
-		return "/plugin/dbs/icons/pan.png";
+		return "/plugin/dbs/icons/d.gif";
 	}
 
 	public String getDisplayName() {
-		return "当当云盘";
+		return "Mantis";
 	}
 
 	public String getUrlName() {
@@ -34,12 +34,12 @@ public class ZLinkPanAction extends ManagementLink implements RootAction {
 	
 	@Override
 	public String getDescription() {
-		return "当当云盘";
+		return "Mantis";
 	}
 
 	public void doIndex(StaplerRequest req, StaplerResponse res)
 			throws ServletException, IOException {
-//		res.sendRedirect(SONAR_UTL);
+		res.sendRedirect(URL);
 	}
 
 }
