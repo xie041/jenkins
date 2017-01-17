@@ -12,24 +12,16 @@
   <f:entry title="服务器列表" field="serverList">
     <f:textbox  />
   </f:entry>
-  <!--
-  <f:entry title="发布方式[tomcat/jar]" field="runMode">
-    <f:textbox/>
-  </f:entry>
-  -->
   <f:entry title="发布到目标机的文件[相对全路径，从pom.xml起]" field="scpFiles">
     <f:textbox  />
   </f:entry>
   <f:entry title="项目发布到开发机全路径" field="name">
     <f:textbox  />
   </f:entry>
-  <f:entry title="项目启动脚本路径" field="shell">
-    <f:textbox  />
+  <f:entry title="编写服务端执行脚本" field="shellExec">
+    <f:textarea  />
   </f:entry>
-  <f:entry title="项目发送到开发机后，立即执行启动脚本" field="shellExec">
-    <f:checkbox  />
-  </f:entry>
-  <f:entry title="Server Builder Functional Activation" field="iswork">
+  <f:entry title="禁用功能" field="forbid">
     <f:checkbox  />
   </f:entry>
   

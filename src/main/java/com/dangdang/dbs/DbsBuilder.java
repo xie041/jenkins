@@ -53,23 +53,20 @@ public class DbsBuilder extends Builder {
 	private static final String PROJECT_STARTUP_SH = "bin/startup.sh";//项目启动脚本
 	private static final String DEPLOY_SHELL = "/home/d/tools/bin/deploy.sh";
 
-	private final boolean iswork;
+	private final boolean forbid;
 	private final String serverList;
 	private final String name;
 	private final String scpFiles;
-	private final String shell;
-	private final boolean shellExec;
+	private final String shellExec;
 
 	// Fields in config.jelly must match the parameter names in the
 	// "DataBoundConstructor"
 	@DataBoundConstructor
-	public DbsBuilder(boolean iswork,String serverList,String name, String scpFiles,String shell,boolean shellExec) {
-		this.iswork = iswork;
+	public DbsBuilder(boolean forbid,String serverList,String name, String scpFiles,String shellExec) {
+		this.forbid = forbid;
 		this.serverList = serverList.trim();
-//		this.runMode = runMode.trim();
 		this.name = name.trim();
 		this.scpFiles = scpFiles.trim();
-		this.shell = shell.trim();
 		this.shellExec = shellExec;
 	}
 
@@ -89,15 +86,11 @@ public class DbsBuilder extends Builder {
 		return scpFiles;
 	}
 
-	public boolean getIswork() {
-		return iswork;
+	public boolean isForbid() {
+		return forbid;
 	}
 
-	public String getShell() {
-		return shell;
-	}
-
-	public boolean isShellExec() {
+	public String getShellExec() {
 		return shellExec;
 	}
 
@@ -111,8 +104,8 @@ public class DbsBuilder extends Builder {
 				return  rendering(HIGHT_LIGHT_BEGIN,"DBS(Server Builder) running....");
 			}
 		});
-		if (!iswork) {
-			logger(listener, rendering(RED ,"Server Builder Functional Not Activation，Will return!"));
+		if (forbid) {
+			logger(listener, rendering(RED ,"服务器发布被禁用!"));
 			return true;
 		}
 		listener.started(buildStepCause); // 向jenkins控制台输出日志
@@ -140,22 +133,17 @@ public class DbsBuilder extends Builder {
 		String[] servers = serverList.split(",");
 		logger(listener, rendering(HIGHT_LIGHT_BEGIN,"发布的服务数量:" + servers.length));
 		//如果没有填写shell路径，则走默认bin/startup.sh
-		String shellPath = "".equals(shell) ? PROJECT_STARTUP_SH : shell;
-		if(shellExec){
-			logger(listener, rendering(HIGHT_LIGHT_BEGIN, "项目发布到开发机后，会自动执行启动脚本"+shellPath));
-		}
 		if (launcher.isUnix()) {
 			///home/d/tools/bin/dbs_tomcat.sh /home/d/jenkins/workspace/compete-web 10.255.209.112 /home/d/www/dbs target/compete-price-web bin/startup.sh true
 			for (int i = 0; i < servers.length; i++) {
 				ArgumentListBuilder args = new ArgumentListBuilder();
-				args.add(DEPLOY_SHELL);
+				args.add(DEPLOY_SHELL);//$1
 				//add params
 				args.add(build.getWorkspace());//$2
 				args.add(servers[i]);//$3
 				args.add(name);//$4
 				args.add(scpFiles);//$5
-				args.add(shellPath);
-				args.add(shellExec);
+				args.add(shellExec);//$6
 				int r = 0;
 				try {
 					r = launcher.launch().cmds(args).stdout(listener).join();
@@ -169,7 +157,6 @@ public class DbsBuilder extends Builder {
 					listener.finished(Result.FAILURE);
 					return false;
 				}
-
 			}
 		} else {
 			logger(listener, rendering(HIGHT_LIGHT_BEGIN, "Windows not supported , Just support linux"));
