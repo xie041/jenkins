@@ -51,7 +51,7 @@ import com.dangdang.dbs.utils.DbsSVNUtils;
  */
 public class SvnUploadBuilder extends Builder {
 
-	private final boolean iswork;
+	private final boolean forbidden;
 	private final String svnRoot;
 	private final String uploadFiles;
 	private final String username;
@@ -61,9 +61,9 @@ public class SvnUploadBuilder extends Builder {
 	// Fields in config.jelly must match the parameter names in the
 	// "DataBoundConstructor"
 	@DataBoundConstructor
-	public SvnUploadBuilder(boolean iswork, String svnRoot, String uploadFiles,
+	public SvnUploadBuilder(boolean forbidden, String svnRoot, String uploadFiles,
 			String username, String password, String message) {
-		this.iswork = iswork;
+		this.forbidden = forbidden;
 		this.svnRoot = svnRoot.trim();
 		this.uploadFiles = uploadFiles.trim();
 		this.username = username.trim();
@@ -94,8 +94,8 @@ public class SvnUploadBuilder extends Builder {
 		return message;
 	}
 
-	public boolean getIswork() {
-		return iswork;
+	public boolean isForbidden() {
+		return forbidden;
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class SvnUploadBuilder extends Builder {
 		});
 
 		listener.started(buildStepCause); // 向jenkins控制台输出日志
-		if (!Boolean.valueOf(iswork)) {
+		if (Boolean.valueOf(forbidden)) {
 			logger(listener, "Svn Uploader功能未激活，即将忽略...");
 			return true;
 		}

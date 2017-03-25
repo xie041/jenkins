@@ -24,7 +24,7 @@
   <f:entry title="svn提交消息" field="message">
     <f:textbox  />
   </f:entry>
-  <f:entry title="功能激活" field="iswork">
+  <f:entry title="功能禁用" field="forbidden">
     <f:checkbox  />
   </f:entry>
   
