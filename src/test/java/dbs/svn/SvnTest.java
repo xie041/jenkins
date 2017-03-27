@@ -16,7 +16,7 @@ public class SvnTest {
 ////		SVNUtil.makeDirectory(ma,SVNURL.parseURIEncoded("file:///D:/d/svn/repository/demo/trunk"), "创建trunk分支");
 //		SVNCommitInfo info = SVNUtil.importDirectory(ma,new File("D:\\d\\test\\price-api"), SVNURL.parseURIEncoded("file:///D:/d/svn/repository/demo/"), "init", true);
 //		System.out.println(info == null);//http://svn.dangdang.com/repos/job/price_pub/dbs/upload
-		String url = "http://svn.dangdang.com/repos/job/price_pub/dbs/upload/";
+		String url = "http://svn.dangdang.com/repos/dev/ly_price/pangu/";
 		DbsSVNUtils utils = DbsSVNUtils.getInstance(null);
 		SVNClientManager manager = utils.authSvn(url, "xieyong","tzmm.978");
 //		boolean exist = DbsSVNUtils.isURLExist(SVNURL.parseURIEncoded(url), "xieyong","tzmm.978");

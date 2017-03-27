@@ -14,20 +14,23 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.servlet.ServletException;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
-import org.tmatesoft.svn.core.SVNCommitInfo;
-import org.tmatesoft.svn.core.SVNException;
-import org.tmatesoft.svn.core.SVNURL;
-import org.tmatesoft.svn.core.wc.SVNClientManager;
 
-import com.dangdang.dbs.utils.DbsSVNUtils;
+import com.dangdang.dbs.utils.PoolUtil;
+import com.dangdang.dbs.utils.Reminder;
+import com.dangdang.dbs.utils.SvnUploadRunner;
+import com.dangdang.dbs.utils.SvnUploader;
 
 /**
  * Sample {@link Builder}.
@@ -114,50 +117,33 @@ public class SvnUploadBuilder extends Builder {
 			logger(listener, "Svn Uploader功能未激活，即将忽略...");
 			return true;
 		}
+		
+		long start = System.currentTimeMillis();
+		SvnUploader info = new SvnUploader();
+		info.setDstURL(SvnUploader.SVN_BASE + svnRoot);
+		String fileWillBeCopy = null;
+		if(StringUtils.isNotBlank(uploadFiles)){
+			fileWillBeCopy = build.getWorkspace()+ File.separator + uploadFiles;
+		}else{
+			fileWillBeCopy = build.getWorkspace() + "" ;
+		}
+		info.setFileWillBeCopy(fileWillBeCopy);
+		info.setUser(username);
+		info.setPwd(password);
+		info.setSvnMsg(message);
+		CountDownLatch latch = new CountDownLatch(2);
+		PoolUtil.pool.execute(new Reminder(latch ,listener));
+		Future<String> f = PoolUtil.pool.submit(new SvnUploadRunner(info,latch));
 
-		SVNURL dstURL = null;
 		try {
-			dstURL = SVNURL.parseURIEncoded(svnRoot);
-		} catch (SVNException e) {
-			e.printStackTrace();
-		}
-		String fileWillBeCopy = build.getWorkspace() + File.separator
-				+ uploadFiles;
-		File localPath = new File(fileWillBeCopy);
-		if (!localPath.exists()) {
-			logger(listener, "上传文件未找到!");
+			latch.await();
+			logger(listener, f.get());
+			logger(listener, "cost=" + (System.currentTimeMillis() - start) + "ms");
+			suc(listener);
+		} catch (InterruptedException | ExecutionException e) {
+			logger(listener, e.getMessage());
 			return false;
 		}
-
-		DbsSVNUtils utils = DbsSVNUtils.getInstance(listener);
-
-		SVNClientManager manager = utils.authSvn(svnRoot, username, password);
-		if (manager == null) {
-			logger(listener, "svn建立连接失败，svn路径不存在或者svn用户名密码不正确!");
-			return false;
-		}
-		SVNCommitInfo delDir = utils.delDir(manager, dstURL, "自动删除svn路径");
-		if(delDir == null){
-			logger(listener,"删除svn路径失败:"+dstURL);
-			return false;
-		}
-		logger(listener,delDir);
-		SVNCommitInfo makeDirectory = utils.makeDirectory(manager,dstURL, "自动创建svn路径");
-		if(makeDirectory == null){
-			logger(listener,"自动创建svn路径失败:"+dstURL);
-			return false;
-		}
-		logger(listener,makeDirectory);
-		SVNCommitInfo info = utils.importDirectory(manager, localPath, dstURL,
-				message, true);
-		if (info == null) {
-			logger(listener, "文件上传失败!");
-			return false;
-		}
-		logger(listener,info);
-		logger(listener, "文件上传成功，最新版本号：" + info.getNewRevision());
-
-		suc(listener);
 
 		return true;
 	}
