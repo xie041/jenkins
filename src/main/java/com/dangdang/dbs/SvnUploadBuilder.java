@@ -131,7 +131,6 @@ public class SvnUploadBuilder extends Builder {
 		bean.setUser(username);
 		bean.setPwd(password);
 		bean.setSvnMsg(message);
-		System.out.println(bean);
 		CountDownLatch latch = new CountDownLatch(2);
 		PoolUtil.pool.execute(new Reminder(latch ,listener));
 		Future<String> f = PoolUtil.pool.submit(new SvnUploadRunner(bean,latch));

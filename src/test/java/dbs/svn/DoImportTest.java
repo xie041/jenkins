@@ -12,6 +12,11 @@ public class DoImportTest {
 		
 		FormBean bean = new FormBean();
 		//"b", "xieyong", "tzmm", "E:\\sv", "main test"
+		bean.setDstURL("b");
+		bean.setFileWillBeCopy("E:\\sv");
+		bean.setUser("xieyong");
+		bean.setPwd("tzmm.978");
+		bean.setSvnMsg("x");
 		SvnImport.upload(bean);
 	}
 }
