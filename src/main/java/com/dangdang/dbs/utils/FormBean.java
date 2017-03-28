@@ -26,7 +26,7 @@ public class FormBean {
 		return fileWillBeCopy;
 	}
 	public void setFileWillBeCopy(String fileWillBeCopy) {
-		this.fileWillBeCopy = fileWillBeCopy;
+		this.fileWillBeCopy = fileWillBeCopy.trim();
 	}
 	public String getUser() {
 		return user;
@@ -44,7 +44,7 @@ public class FormBean {
 		return svnMsg;
 	}
 	public void setSvnMsg(String svnMsg) {
-		this.svnMsg = svnMsg;
+		this.svnMsg = svnMsg.trim();
 	}
 	@Override
 	public String toString() {
