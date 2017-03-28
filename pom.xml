@@ -16,7 +16,7 @@
 
 	<groupId>com.dangdang</groupId>
 	<artifactId>dbs</artifactId>
-	<version>1.5</version>
+	<version>1.6</version>
 	<packaging>hpi</packaging>
 
 	<licenses>

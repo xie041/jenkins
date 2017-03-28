@@ -27,10 +27,10 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
+import com.dangdang.dbs.utils.FormBean;
 import com.dangdang.dbs.utils.PoolUtil;
 import com.dangdang.dbs.utils.Reminder;
 import com.dangdang.dbs.utils.SvnUploadRunner;
-import com.dangdang.dbs.utils.SvnUploader;
 
 /**
  * Sample {@link Builder}.
@@ -119,21 +119,22 @@ public class SvnUploadBuilder extends Builder {
 		}
 		
 		long start = System.currentTimeMillis();
-		SvnUploader info = new SvnUploader();
-		info.setDstURL(SvnUploader.SVN_BASE + svnRoot);
+		FormBean bean = new FormBean();
+		bean.setDstURL(svnRoot);
 		String fileWillBeCopy = null;
 		if(StringUtils.isNotBlank(uploadFiles)){
 			fileWillBeCopy = build.getWorkspace()+ File.separator + uploadFiles;
 		}else{
 			fileWillBeCopy = build.getWorkspace() + "" ;
 		}
-		info.setFileWillBeCopy(fileWillBeCopy);
-		info.setUser(username);
-		info.setPwd(password);
-		info.setSvnMsg(message);
+		bean.setFileWillBeCopy(fileWillBeCopy);
+		bean.setUser(username);
+		bean.setPwd(password);
+		bean.setSvnMsg(message);
+		System.out.println(bean);
 		CountDownLatch latch = new CountDownLatch(2);
 		PoolUtil.pool.execute(new Reminder(latch ,listener));
-		Future<String> f = PoolUtil.pool.submit(new SvnUploadRunner(info,latch));
+		Future<String> f = PoolUtil.pool.submit(new SvnUploadRunner(bean,latch));
 
 		try {
 			latch.await();
@@ -144,7 +145,6 @@ public class SvnUploadBuilder extends Builder {
 			logger(listener, e.getMessage());
 			return false;
 		}
-
 		return true;
 	}
 

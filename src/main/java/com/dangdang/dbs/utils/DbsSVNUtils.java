@@ -17,6 +17,7 @@ import org.tmatesoft.svn.core.internal.wc.DefaultSVNOptions;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
+import org.tmatesoft.svn.core.wc.SVNCommitClient;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNStatus;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
@@ -99,14 +100,15 @@ public class DbsSVNUtils {
 	 * @return
 	 * @throws SVNException
 	 */
-	public  SVNCommitInfo makeDirectory(SVNClientManager clientManager,
+	public static SVNCommitInfo makeDirectory(SVNCommitClient clientManager,
 			SVNURL url, String commitMessage) {
-		log("makeDirectory url>>"+url);
+//		log("makeDirectory url>>"+url);
 		try {
-			return clientManager.getCommitClient().doMkDir(
+			return clientManager.doMkDir(
 					new SVNURL[] { url }, commitMessage);
 		} catch (SVNException e) {
-			log("makeDirectory error >>>>>>"+e.getMessage());
+//			log("makeDirectory error >>>>>>"+e.getMessage());
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -118,14 +120,15 @@ public class DbsSVNUtils {
 	 * @param commitMessage
 	 * @return
 	 */
-	public  SVNCommitInfo delDir(SVNClientManager clientManager,
+	public static SVNCommitInfo delDir(SVNCommitClient clientManager,
 			SVNURL url, String commitMessage) {
-		log("delDir url>>"+url);
+//		log("delDir url>>"+url);
 		try {
-			return clientManager.getCommitClient().doDelete(
+			return clientManager.doDelete(
 					new SVNURL[] { url }, commitMessage);
 		} catch (SVNException e) {
-			log("delDir error >>>>>>"+e.getMessage());
+//			log("delDir error >>>>>>"+e.getMessage());
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -146,16 +149,17 @@ public class DbsSVNUtils {
 	 *            递归
 	 * @return
 	 */
-	public  SVNCommitInfo importDirectory(SVNClientManager clientManager,
+	public static SVNCommitInfo importDirectory(SVNCommitClient clientManager,
 			File localPath, SVNURL dstURL, String commitMessage,
 			boolean isRecursive) {
-		log("importDirectory url>>"+dstURL);
+//		log("importDirectory url>>"+dstURL);
 		try {
-			return clientManager.getCommitClient().doImport(localPath, dstURL,
+			return clientManager.doImport(localPath, dstURL,
 					commitMessage, null, true, true,
 					SVNDepth.fromRecurse(isRecursive));
 		} catch (SVNException e) {
-			log("authSvn error >>>>>>"+e.getMessage());
+//			log("authSvn error >>>>>>"+e.getMessage());
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -168,12 +172,12 @@ public class DbsSVNUtils {
 	 * @param wcPath
 	 *            work copy path
 	 */
-	public  void addEntry(SVNClientManager clientManager, File wcPath) {
+	public static void addEntry(SVNClientManager clientManager, File wcPath) {
 		try {
 			clientManager.getWCClient().doAdd(new File[] { wcPath }, true,
 					false, false, SVNDepth.INFINITY, false, false, true);
 		} catch (SVNException e) {
-			log("addEntry error >>>>>>"+e.getMessage());
+//			log("addEntry error >>>>>>"+e.getMessage());
 		}
 	}
 
@@ -191,13 +195,13 @@ public class DbsSVNUtils {
 	 * @return
 	 * @throws SVNException
 	 */
-	public  SVNStatus showStatus(SVNClientManager clientManager,
+	public static SVNStatus showStatus(SVNClientManager clientManager,
 			File wcPath, boolean remote) {
 		SVNStatus status = null;
 		try {
 			status = clientManager.getStatusClient().doStatus(wcPath, remote);
 		} catch (SVNException e) {
-			log("showStatus error >>>>>>"+e.getMessage());
+//			log("showStatus error >>>>>>"+e.getMessage());
 		}
 		return status;
 	}
@@ -215,14 +219,14 @@ public class DbsSVNUtils {
 	 * @return
 	 * @throws SVNException
 	 */
-	public  SVNCommitInfo commit(SVNClientManager clientManager,
+	public static SVNCommitInfo commit(SVNClientManager clientManager,
 			File wcPath, boolean keepLocks, String commitMessage) {
 		try {
 			return clientManager.getCommitClient().doCommit(
 					new File[] { wcPath }, keepLocks, commitMessage, null,
 					null, false, false, SVNDepth.INFINITY);
 		} catch (SVNException e) {
-			log("commit error >>>>>>"+e.getMessage());
+//			log("commit error >>>>>>"+e.getMessage());
 		}
 		return null;
 	}
@@ -241,7 +245,7 @@ public class DbsSVNUtils {
 	 * @return
 	 * @throws SVNException
 	 */
-	public  long update(SVNClientManager clientManager, File wcPath,
+	public static long update(SVNClientManager clientManager, File wcPath,
 			SVNRevision updateToRevision, SVNDepth depth) {
 		SVNUpdateClient updateClient = clientManager.getUpdateClient();
 
@@ -257,7 +261,7 @@ public class DbsSVNUtils {
 			return updateClient.doUpdate(wcPath, updateToRevision, depth,
 					false, false);
 		} catch (SVNException e) {
-			log("update error >>>>>>"+e.getMessage());
+//			log("update error >>>>>>"+e.getMessage());
 		}
 		return 0;
 	}
@@ -278,7 +282,7 @@ public class DbsSVNUtils {
 	 * @return
 	 * @throws SVNException
 	 */
-	public  long checkout(SVNClientManager clientManager, SVNURL url,
+	public static long checkout(SVNClientManager clientManager, SVNURL url,
 			SVNRevision revision, File destPath, SVNDepth depth) {
 
 		SVNUpdateClient updateClient = clientManager.getUpdateClient();
@@ -293,7 +297,7 @@ public class DbsSVNUtils {
 			return updateClient.doCheckout(url, destPath, revision, revision,
 					depth, false);
 		} catch (SVNException e) {
-			log("checkout error >>>>>>"+e.getMessage());
+//			log("checkout error >>>>>>"+e.getMessage());
 		}
 		return 0;
 	}
@@ -304,7 +308,7 @@ public class DbsSVNUtils {
 	 * @param path
 	 * @return
 	 */
-	public  boolean isWorkingCopy(File path) {
+	public boolean isWorkingCopy(File path) {
 		if (!path.exists()) {
 			log("isWorkingCopy error >>>>>>'" + path + "' not exist!");
 			return false;

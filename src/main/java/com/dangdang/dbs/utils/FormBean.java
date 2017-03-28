@@ -6,7 +6,7 @@ package com.dangdang.dbs.utils;
  * @author xieyong
  *
  */
-public class SvnUploader {
+public class FormBean {
 	
 	public static final String SVN_BASE = "http://svn.dangdang.com/repos/dev/ly_price/pangu/";
 	
@@ -17,7 +17,7 @@ public class SvnUploader {
 	private String svnMsg;
 	
 	public String getDstURL() {
-		return dstURL;
+		return FormBean.SVN_BASE + dstURL;
 	}
 	public void setDstURL(String dstURL) {
 		this.dstURL = dstURL;
@@ -32,19 +32,25 @@ public class SvnUploader {
 		return user;
 	}
 	public void setUser(String user) {
-		this.user = user;
+		this.user = user.trim();
 	}
 	public String getPwd() {
 		return pwd;
 	}
 	public void setPwd(String pwd) {
-		this.pwd = pwd;
+		this.pwd = pwd.trim();
 	}
 	public String getSvnMsg() {
 		return svnMsg;
 	}
 	public void setSvnMsg(String svnMsg) {
 		this.svnMsg = svnMsg;
+	}
+	@Override
+	public String toString() {
+		return "FormBean [dstURL=" + dstURL + ", fileWillBeCopy="
+				+ fileWillBeCopy + ", user=" + user + ", pwd=" + pwd
+				+ ", svnMsg=" + svnMsg + "]";
 	}
 
 }

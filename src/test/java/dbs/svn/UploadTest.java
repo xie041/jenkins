@@ -7,19 +7,20 @@ import java.util.concurrent.Future;
 import com.dangdang.dbs.utils.PoolUtil;
 import com.dangdang.dbs.utils.Reminder;
 import com.dangdang.dbs.utils.SvnUploadRunner;
-import com.dangdang.dbs.utils.SvnUploader;
+import com.dangdang.dbs.utils.FormBean;
 
 public class UploadTest {
 	
 	public static void main(String[] args) {
 		
 		CountDownLatch latch = new CountDownLatch(2);
-		SvnUploader s = new SvnUploader();
-		s.setDstURL(SvnUploader.SVN_BASE + "b");
+		FormBean s = new FormBean();
+		s.setDstURL("b");
 		s.setFileWillBeCopy("D:\\d\\workspace_git\\jenkins\\work\\jobs\\a\\workspace");
 		s.setUser("xieyong");
-		s.setPwd("tz***");
+		s.setPwd("tzmm.978");
 		s.setSvnMsg("demo");
+		System.out.println(s);
 		
 		PoolUtil.pool.execute(new Reminder(latch,null));
 		Future<String> f = PoolUtil.pool.submit(new SvnUploadRunner(s,latch));
